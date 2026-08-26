@@ -1,0 +1,11 @@
+{
+  "name": "nudavorae-frontend-challenge",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "stub": "node stub/server.mjs",
+    "seed": "node stub/generate-seed.mjs",
+    "start": "node scripts/dev.mjs"
+  }
+}
