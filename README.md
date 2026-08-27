@@ -36,9 +36,15 @@ they stay through typing, sorting and paging.
 
 They compose, and they apply to the pack screen too:
 
-- **A failing write.** http://localhost:4200/packs/pack_0001?fail=503 — write a
-  review and post it. The average moves immediately, then goes back to what it
-  was, and the form still has your text.
+- **A failing write.** http://localhost:4200/packs/pack_0006 — post a review
+  (it succeeds, and the form becomes *Change your review*). Now change the score
+  and the text and save it again: the stub answers **409**, because it has
+  already taken one review from you. The average moves the instant you press
+  the button, then returns to what the server last said, the reason appears
+  under the field, and your text is still there.
+  Note that `?fail=` on this screen fails the *pack* request too, so you get the
+  failed screen rather than a failed write — which is why the recipe above uses
+  a refusal the stub produces on its own.
 - **The stale search.** http://localhost:4200/?delay=3000 — type `lat`, wait a
   beat, then finish the word to `latex`. `lat` matches 8 packs and `latex`
   matches 1; the 8 never appear.
@@ -50,7 +56,9 @@ They compose, and they apply to the pack screen too:
 - **Back.** Open a pack from halfway down the list and press Back. Same cards,
   same scroll position, no spinner, no refetch.
 - **Keyboard only.** Tab to the rating on a pack screen; it is one stop, and the
-  arrow keys set the score.
+  arrow keys set the score. Each star announces itself as "3 stars", not "star".
+- **A deep link.** Paste http://localhost:4200/packs/pack_0012 into a new tab.
+  It loads the app, not the API, even though the stub owns that path.
 - **Theme.** The control in the header is System / Light / Dark. System follows
   the OS; the choice survives a reload.
 - **The three refusals.** `pack_0003` (already reviewed), `pack_0007` (not
