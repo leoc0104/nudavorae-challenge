@@ -1,0 +1,101 @@
+/*
+  The four things both screens needed, per the brief's "build the four things
+  you need" rather than reaching for a component library. They live here instead
+  of being copied into two component stylesheets, and they read only the
+  semantic layer.
+*/
+
+/* Buttons and links that act as buttons. 44px minimum target throughout. */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--nud-target-min);
+  padding: 0 var(--nud-space-6);
+  border-radius: var(--nud-radius-full);
+  border: 1px solid transparent;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--nud-duration-fast) var(--nud-ease),
+    border-color var(--nud-duration-fast) var(--nud-ease);
+}
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.button--primary {
+  background: var(--brand-solid);
+  color: var(--text-on-brand);
+}
+.button--primary:hover:not(:disabled) {
+  background: var(--brand-solid-hover);
+}
+.button--ghost {
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+.button--ghost:hover:not(:disabled) {
+  border-color: var(--border-interactive);
+}
+
+/* The empty and failed states: designed, rather than a blank page. */
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nud-space-3);
+  text-align: center;
+  padding: var(--nud-space-16) var(--nud-space-6);
+  background: var(--surface-sunken);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--nud-radius-sheet);
+}
+.state--quiet {
+  padding: var(--nud-space-8) var(--nud-space-6);
+}
+.state--error {
+  border-style: solid;
+  border-color: var(--status-danger-border);
+  background: var(--status-danger-tint);
+}
+.state__title {
+  font-family: var(--nud-font-display);
+  font-size: var(--nud-text-20);
+  font-weight: 600;
+}
+.state__body {
+  color: var(--text-secondary);
+  max-width: 52ch;
+}
+.state__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--nud-space-3);
+}
+
+/* The loading state: the shape of the answer, rather than a spinner. */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base) 0%,
+    var(--skeleton-sheen) 50%,
+    var(--skeleton-base) 100%
+  );
+  background-size: 200% 100%;
+  animation: nud-sheen 1.4s var(--nud-ease) infinite;
+  border-radius: var(--nud-radius-inset);
+}
+@keyframes nud-sheen {
+  to {
+    background-position: -200% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}

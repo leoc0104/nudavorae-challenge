@@ -11,7 +11,6 @@
 .crumbs a:hover {
   text-decoration: underline;
 }
-
 .detail {
   display: grid;
   grid-template-columns: minmax(240px, 380px) 1fr;
@@ -62,7 +61,6 @@
   max-width: 62ch;
   margin-top: var(--nud-space-2);
 }
-
 .panel {
   padding-block: var(--nud-space-8);
   border-top: 1px solid var(--border-subtle);
@@ -75,7 +73,6 @@
   color: var(--text-secondary);
   font-size: var(--nud-text-18);
 }
-
 .scores {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -107,7 +104,6 @@
 .scores__count {
   margin-top: var(--nud-space-1);
 }
-
 .bars {
   list-style: none;
   margin: 0;
@@ -140,7 +136,6 @@
   color: var(--text-secondary);
   text-align: right;
 }
-
 .reviews {
   list-style: none;
   margin: 0;
@@ -180,74 +175,6 @@
   color: var(--text-secondary);
 }
 
-.state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--nud-space-3);
-  text-align: center;
-  padding: var(--nud-space-12) var(--nud-space-6);
-  background: var(--surface-sunken);
-  border: 1px dashed var(--border-strong);
-  border-radius: var(--nud-radius-sheet);
-}
-.state--quiet {
-  padding: var(--nud-space-8) var(--nud-space-6);
-}
-.state--error {
-  border-style: solid;
-  border-color: var(--status-danger-border);
-  background: var(--status-danger-tint);
-}
-.state__title {
-  font-family: var(--nud-font-display);
-  font-size: var(--nud-text-20);
-  font-weight: 600;
-}
-.state__body {
-  color: var(--text-secondary);
-  max-width: 52ch;
-}
-.state__actions {
-  display: flex;
-  gap: var(--nud-space-3);
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: var(--nud-target-min);
-  padding: 0 var(--nud-space-6);
-  border-radius: var(--nud-radius-full);
-  border: 1px solid transparent;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-}
-.button--primary {
-  background: var(--brand-solid);
-  color: var(--text-on-brand);
-}
-.button--ghost {
-  background: var(--surface-raised);
-  color: var(--text-primary);
-  border-color: var(--border-strong);
-}
-
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--skeleton-base) 0%,
-    var(--skeleton-sheen) 50%,
-    var(--skeleton-base) 100%
-  );
-  background-size: 200% 100%;
-  animation: sheen 1.4s var(--nud-ease) infinite;
-  border-radius: var(--nud-radius-inset);
-}
 .skeleton__cover {
   aspect-ratio: 1 / 1;
   border-radius: var(--nud-radius-sheet);
@@ -256,11 +183,7 @@
   display: block;
   height: 14px;
 }
-@keyframes sheen {
-  to {
-    background-position: -200% 0;
-  }
-}
+
 @media (prefers-reduced-motion: reduce) {
   .skeleton {
     animation: none;

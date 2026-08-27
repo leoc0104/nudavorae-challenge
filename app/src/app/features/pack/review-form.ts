@@ -108,22 +108,6 @@ import { RatingInput } from './rating-input';
       font-size: var(--nud-text-14);
       color: var(--text-secondary);
     }
-    .button {
-      min-height: var(--nud-target-min);
-      padding: 0 var(--nud-space-6);
-      border-radius: var(--nud-radius-full);
-      border: 1px solid transparent;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .button:disabled {
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
-    .button--primary {
-      background: var(--brand-solid);
-      color: var(--text-on-brand);
-    }
   `,
 })
 export class ReviewForm {
