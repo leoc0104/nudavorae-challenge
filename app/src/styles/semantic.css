@@ -1,0 +1,107 @@
+/*
+  Layer two.
+
+  tokens/palette.css names what a value IS (--nud-primary-600). This file names
+  what it is FOR (--surface-raised). Components read only this layer, which is
+  what makes re-theming possible: the palette gives three dark surfaces against
+  one light one, so there is no one-to-one mapping between them, only this
+  composition.
+
+  Light is composed from #ffffff and the neutral ramp; dark remaps the same
+  names onto the three dark surfaces. Every name below is defined in both.
+*/
+
+:root {
+  color-scheme: light;
+
+  --surface-base: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-sunken: var(--nud-neutral-50);
+  --surface-overlay: #ffffff;
+  --surface-inset: var(--nud-neutral-50);
+
+  --text-primary: var(--nud-neutral-900);
+  --text-secondary: var(--nud-neutral-600);
+  --text-muted: color-mix(in srgb, var(--nud-neutral-600) 78%, #ffffff);
+  --text-on-brand: #ffffff;
+  --text-link: var(--nud-primary-700);
+
+  --border-subtle: color-mix(in srgb, var(--nud-neutral-200) 62%, #ffffff);
+  --border-strong: var(--nud-neutral-200);
+  --border-interactive: var(--nud-neutral-600);
+
+  --brand-solid: var(--nud-primary-600);
+  --brand-solid-hover: var(--nud-primary-700);
+  --brand-tint: var(--nud-primary-50);
+  --brand-border: var(--nud-primary-200);
+  --brand-gradient: var(--nud-gradient-brand);
+
+  --accent-solid: var(--nud-accent-600);
+  --accent-tint: var(--nud-accent-50);
+
+  --rating-on: var(--nud-accent-600);
+  --rating-off: var(--nud-neutral-200);
+  --rating-track: var(--nud-neutral-200);
+
+  --status-success: var(--nud-success-600);
+  --status-warning: var(--nud-warning-500);
+  --status-danger: var(--nud-danger-600);
+  --status-danger-tint: color-mix(in srgb, var(--nud-danger-600) 8%, #ffffff);
+  --status-danger-border: color-mix(in srgb, var(--nud-danger-600) 32%, #ffffff);
+
+  --focus-ring: var(--nud-primary-600);
+  --skeleton-base: var(--nud-neutral-50);
+  --skeleton-sheen: color-mix(in srgb, var(--nud-neutral-200) 55%, #ffffff);
+
+  --shadow-card: 0 1px 2px color-mix(in srgb, var(--nud-neutral-900) 6%, transparent),
+    0 8px 24px color-mix(in srgb, var(--nud-neutral-900) 6%, transparent);
+  --shadow-overlay: 0 12px 40px color-mix(in srgb, var(--nud-neutral-900) 14%, transparent);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --surface-base: var(--nud-dark-base);
+  --surface-raised: var(--nud-dark-raised);
+  --surface-sunken: var(--nud-dark-base);
+  --surface-overlay: var(--nud-dark-overlay);
+  --surface-inset: var(--nud-dark-overlay);
+
+  --text-primary: var(--nud-neutral-50);
+  --text-secondary: color-mix(in srgb, var(--nud-neutral-200) 82%, var(--nud-dark-base));
+  --text-muted: color-mix(in srgb, var(--nud-neutral-200) 58%, var(--nud-dark-base));
+  --text-on-brand: #ffffff;
+  --text-link: var(--nud-primary-200);
+
+  --border-subtle: color-mix(in srgb, var(--nud-neutral-200) 14%, var(--nud-dark-base));
+  --border-strong: color-mix(in srgb, var(--nud-neutral-200) 26%, var(--nud-dark-base));
+  --border-interactive: color-mix(in srgb, var(--nud-neutral-200) 46%, var(--nud-dark-base));
+
+  /* The 600 pair goes muddy against a near-black page, so brand lifts a step. */
+  --brand-solid: color-mix(in srgb, var(--nud-primary-600) 72%, var(--nud-neutral-50));
+  --brand-solid-hover: color-mix(in srgb, var(--nud-primary-600) 86%, var(--nud-neutral-50));
+  --brand-tint: color-mix(in srgb, var(--nud-primary-600) 18%, var(--nud-dark-base));
+  --brand-border: color-mix(in srgb, var(--nud-primary-600) 42%, var(--nud-dark-base));
+  --brand-gradient: var(--nud-gradient-brand-dark);
+
+  --accent-solid: color-mix(in srgb, var(--nud-accent-600) 74%, var(--nud-neutral-50));
+  --accent-tint: color-mix(in srgb, var(--nud-accent-600) 18%, var(--nud-dark-base));
+
+  --rating-on: color-mix(in srgb, var(--nud-accent-600) 70%, var(--nud-neutral-50));
+  --rating-off: color-mix(in srgb, var(--nud-neutral-200) 24%, var(--nud-dark-base));
+  --rating-track: color-mix(in srgb, var(--nud-neutral-200) 18%, var(--nud-dark-base));
+
+  --status-success: color-mix(in srgb, var(--nud-success-600) 62%, var(--nud-neutral-50));
+  --status-warning: color-mix(in srgb, var(--nud-warning-500) 70%, var(--nud-neutral-50));
+  --status-danger: color-mix(in srgb, var(--nud-danger-600) 76%, var(--nud-neutral-50));
+  --status-danger-tint: color-mix(in srgb, var(--nud-danger-600) 16%, var(--nud-dark-base));
+  --status-danger-border: color-mix(in srgb, var(--nud-danger-600) 42%, var(--nud-dark-base));
+
+  --focus-ring: color-mix(in srgb, var(--nud-primary-600) 60%, var(--nud-neutral-50));
+  --skeleton-base: var(--nud-dark-raised);
+  --skeleton-sheen: var(--nud-dark-overlay);
+
+  --shadow-card: 0 1px 2px color-mix(in srgb, #000000 40%, transparent),
+    0 8px 24px color-mix(in srgb, #000000 32%, transparent);
+  --shadow-overlay: 0 12px 40px color-mix(in srgb, #000000 52%, transparent);
+}

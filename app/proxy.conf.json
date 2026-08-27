@@ -1,0 +1,4 @@
+{
+  "/packs": { "target": "http://localhost:4010", "secure": false, "changeOrigin": true },
+  "/media": { "target": "http://localhost:4010", "secure": false, "changeOrigin": true }
+}
