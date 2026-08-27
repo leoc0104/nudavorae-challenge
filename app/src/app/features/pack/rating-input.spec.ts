@@ -1,4 +1,9 @@
-import { Component, provideZonelessChangeDetection, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  provideZonelessChangeDetection,
+  signal,
+} from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { Score } from '../../core/api/contract';
@@ -14,6 +19,8 @@ import { RatingInput } from './rating-input';
  * option says which one it is, and that it opens empty or prefilled as asked.
  */
 @Component({
+  // OnPush here too, so the control is exercised the way it is used.
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RatingInput],
   template: `<nud-rating-input [(value)]="score" />`,
 })

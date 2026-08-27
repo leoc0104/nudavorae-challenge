@@ -2,7 +2,6 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   afterNextRender,
   computed,
   effect,
@@ -11,8 +10,8 @@ import {
   untracked,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { Subject, debounceTime, distinctUntilChanged, filter } from 'rxjs';
 import { SORTS, Sort, isSort } from '../../core/api/contract';
 import { PackCardComponent } from './pack-card';
 import { CatalogueStore } from './catalogue-store';
@@ -104,7 +103,17 @@ export class CataloguePage {
   constructor() {
     // The URL asks; the store answers, and declines to re-ask a question it is
     // already holding the answer to (RF-6).
-    effect(() => this.store.load({ q: this.q(), sort: this.sort() }));
+    //
+    // untracked is load-bearing, not decoration. load() reads the store's own
+    // status to decide whether a failed query is worth retrying, and a signal
+    // read inside an effect becomes a dependency of it. Tracked, that closes a
+    // loop: the request fails, status becomes 'failed', the effect re-runs,
+    // load() sees 'failed' and re-requests, for ever. The screen would sit on
+    // its loading state hammering the server and never show the failure.
+    effect(() => {
+      const query = { q: this.q(), sort: this.sort() };
+      untracked(() => this.store.load(query));
+    });
 
     // Back, forward, or a pasted link changes the URL under the box.
     effect(() => {
@@ -131,7 +140,16 @@ export class CataloguePage {
       if (y > 0) window.scrollTo({ top: y, behavior: 'instant' });
     });
 
-    inject(DestroyRef).onDestroy(() => this.store.rememberScroll(window.scrollY));
+    // Recorded when the navigation starts rather than when this component is
+    // destroyed. By destroy time the next screen has already been laid out and
+    // the browser has clamped window.scrollY to its shorter page, so reading it
+    // then reliably records 0 and the list comes back at the top.
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationStart => event instanceof NavigationStart),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => this.store.rememberScroll(window.scrollY));
   }
 
   protected onSearchInput(event: Event): void {

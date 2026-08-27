@@ -30,7 +30,7 @@ import { RatingInput } from './rating-input';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RatingInput],
   template: `
-    <form class="form" (ngSubmit)="onSubmit()">
+    <form class="form" (submit)="onSubmit($event)">
       <h3 class="form__title">{{ mode() === 'edit' ? 'Change your review' : 'Write a review' }}</h3>
 
       <nud-rating-input [(value)]="score" [disabled]="submitting()" />
@@ -164,7 +164,13 @@ export class ReviewForm {
     this.localProblem.set(null);
   }
 
-  protected onSubmit(): void {
+  protected onSubmit(event: Event): void {
+    // The native submit, prevented explicitly. Using (ngSubmit) without
+    // importing FormsModule binds nothing at all: the browser then submits the
+    // form for real, the app reloads, and the draft is gone. Nothing here needs
+    // NgForm, so the platform event is the honest thing to listen to.
+    event.preventDefault();
+
     const score = this.score();
     const body = this.body().trim();
 

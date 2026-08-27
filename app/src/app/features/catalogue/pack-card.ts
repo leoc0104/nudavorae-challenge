@@ -25,7 +25,7 @@ import { RatingDisplay } from '../../ui/rating';
 
       <span class="card__body">
         <span class="card__title">{{ pack().title }}</span>
-        <span class="card__handle mono">{{ pack().creator_handle }}</span>
+        <span class="card__handle mono">{{ '@' + pack().creator_handle }}</span>
 
         <span class="card__foot">
           <span class="card__price mono">{{ pack().price_cents | money }}</span>

@@ -38,7 +38,7 @@
 
           <div class="detail__body">
             <h1 class="detail__title">{{ pack.title }}</h1>
-            <p class="detail__handle mono">{{ pack.creator_handle }}</p>
+            <p class="detail__handle mono">{{ '@' + pack.creator_handle }}</p>
 
             <p class="detail__price mono">{{ pack.price_cents | money }}</p>
 
@@ -137,7 +137,9 @@
               @for (review of store.reviews(); track review.id) {
                 <li class="review" [class.review--pending]="review.id === store.pendingReviewId()">
                   <div class="review__head">
-                    <span class="review__author mono">{{ review.author_handle }}</span>
+                    <span class="review__author mono">{{
+                      review.author_handle === 'you' ? 'You' : '@' + review.author_handle
+                    }}</span>
                     <nud-rating [rating]="review.score.toFixed(1)" />
                     @if (review.id === store.pendingReviewId()) {
                       <span class="review__pending">Sending</span>

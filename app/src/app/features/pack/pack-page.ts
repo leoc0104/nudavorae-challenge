@@ -1,5 +1,12 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  untracked,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NewReview, RefusalReason, Score } from '../../core/api/contract';
@@ -20,8 +27,13 @@ const REFUSALS: Readonly<Record<RefusalReason, { title: string; body: string }>>
     body: 'It is no longer for sale, and its reviews are closed. Existing reviews stay visible.',
   },
   already_reviewed: {
+    // Reached when the stub says the caller has reviewed the pack but no review
+    // in the list is attributed to them, so there is nothing to prefill and
+    // nothing to point at. Claiming otherwise would be a screen telling a small
+    // lie. Once they write one in this session it is attributed, and the form
+    // above becomes the editable version instead.
     title: 'You have already reviewed this pack',
-    body: 'Your review is in the list below.',
+    body: 'Reviews can only be left once per buyer, so there is nothing to add here.',
   },
 };
 
@@ -46,23 +58,32 @@ export class PackPage {
     return reason === null ? null : REFUSALS[reason];
   });
 
-  /** Absolute counts turned into bar widths, largest bucket at full width. */
+  /**
+   * Absolute counts turned into bar widths, as a share of all reviews rather
+   * than of the biggest bucket. Scaling to the biggest bucket always paints one
+   * bar full width, which makes two reviews out of four look unanimous.
+   */
   protected readonly bars = computed(() => {
     const distribution = this.store.distribution();
     const counts = [5, 4, 3, 2, 1].map((score) => ({
       score: score as Score,
       count: distribution[String(score) as '1' | '2' | '3' | '4' | '5'],
     }));
-    const largest = Math.max(...counts.map((bucket) => bucket.count), 1);
-    return counts.map((bucket) => ({ ...bucket, percent: (bucket.count / largest) * 100 }));
+    const total = counts.reduce((n, bucket) => n + bucket.count, 0);
+    return counts.map((bucket) => ({
+      ...bucket,
+      percent: total === 0 ? 0 : (bucket.count / total) * 100,
+    }));
   });
 
   private lastAnnounced = '';
 
   constructor() {
+    // untracked for the same reason as the catalogue: the effect's only
+    // dependency should be the id in the URL, never anything load() touches.
     effect(() => {
       const id = this.packId();
-      if (id !== '') this.store.load(id);
+      if (id !== '') untracked(() => this.store.load(id));
     });
 
     effect(() => {
