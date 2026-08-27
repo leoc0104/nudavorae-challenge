@@ -1,0 +1,180 @@
+.head {
+  padding-block: var(--nud-space-12) var(--nud-space-6);
+}
+.head__title {
+  font-size: var(--nud-text-38);
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  width: fit-content;
+}
+.head__lede {
+  color: var(--text-secondary);
+  margin-top: var(--nud-space-2);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nud-space-4);
+  align-items: end;
+  padding-bottom: var(--nud-space-8);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nud-space-1);
+}
+.field--search {
+  flex: 1 1 320px;
+}
+.label {
+  font-size: var(--nud-text-12);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.input {
+  min-height: var(--nud-target-min);
+  padding: 0 var(--nud-space-3);
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--nud-radius-control);
+  transition: border-color var(--nud-duration-fast) var(--nud-ease);
+}
+.input:hover {
+  border-color: var(--border-interactive);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--nud-card-min), 1fr));
+  gap: var(--nud-space-6);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* The loading state: the shape of the answer, not a spinner. */
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nud-space-2);
+  padding: 0 0 var(--nud-space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--nud-radius-card);
+  overflow: hidden;
+  background: var(--surface-raised);
+}
+.skeleton__cover {
+  aspect-ratio: 1 / 1;
+}
+.skeleton__line {
+  height: 12px;
+  margin-inline: var(--nud-space-4);
+  border-radius: var(--nud-radius-inset);
+}
+.skeleton__line--title {
+  width: 78%;
+  margin-top: var(--nud-space-2);
+}
+.skeleton__line--handle {
+  width: 42%;
+}
+.skeleton__line--foot {
+  width: 60%;
+  margin-top: var(--nud-space-2);
+}
+.skeleton__cover,
+.skeleton__line {
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base) 0%,
+    var(--skeleton-sheen) 50%,
+    var(--skeleton-base) 100%
+  );
+  background-size: 200% 100%;
+  animation: sheen 1.4s var(--nud-ease) infinite;
+}
+@keyframes sheen {
+  to {
+    background-position: -200% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton__cover,
+  .skeleton__line {
+    animation: none;
+  }
+}
+
+/* Empty and failed, designed rather than a blank page. */
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nud-space-3);
+  text-align: center;
+  padding: var(--nud-space-16) var(--nud-space-6);
+  background: var(--surface-sunken);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--nud-radius-sheet);
+}
+.state--error {
+  border-style: solid;
+  border-color: var(--status-danger-border);
+  background: var(--status-danger-tint);
+}
+.state__title {
+  font-family: var(--nud-font-display);
+  font-size: var(--nud-text-20);
+  font-weight: 600;
+}
+.state__body {
+  color: var(--text-secondary);
+  max-width: 46ch;
+}
+
+.button {
+  min-height: var(--nud-target-min);
+  padding: 0 var(--nud-space-6);
+  border-radius: var(--nud-radius-full);
+  border: 1px solid transparent;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--nud-duration-fast) var(--nud-ease);
+}
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.button--primary {
+  background: var(--brand-solid);
+  color: var(--text-on-brand);
+}
+.button--primary:hover:not(:disabled) {
+  background: var(--brand-solid-hover);
+}
+.button--ghost {
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+.button--ghost:hover:not(:disabled) {
+  border-color: var(--border-interactive);
+}
+
+.more {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nud-space-3);
+  padding-top: var(--nud-space-12);
+}
+.more__error {
+  color: var(--status-danger);
+  font-size: var(--nud-text-14);
+}

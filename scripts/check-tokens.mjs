@@ -9,7 +9,8 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const scanRoot = join(root, 'app', 'src');
 const allowed = [join('app', 'src', 'styles')];
 
-const COLOUR = /(#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|oklch|lab|color-mix)\s*\()/g;
+// A leading & means it is an HTML numeric entity (&#8592;), not a colour.
+const COLOUR = /((?<!&)(?<!\w)#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|oklch|lab|color-mix)\s*\()/g;
 
 function walk(dir) {
   const out = [];
