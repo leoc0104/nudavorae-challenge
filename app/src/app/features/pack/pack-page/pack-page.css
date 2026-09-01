@@ -179,9 +179,52 @@
   aspect-ratio: 1 / 1;
   border-radius: var(--nud-radius-sheet);
 }
-.skeleton__line {
+/* Heights are the real LINE BOX (font-size x line-height), not the font
+   size, so nothing shifts when the text replaces them. */
+.skeleton__title,
+.skeleton__handle,
+.skeleton__price,
+.skeleton__rating,
+.skeleton__text {
   display: block;
-  height: 14px;
+}
+.skeleton__title {
+  width: 62%;
+  height: calc(var(--nud-text-38) * 1.2);
+}
+.skeleton__handle {
+  width: 26%;
+  height: calc(var(--nud-text-16) * 1.55);
+}
+.skeleton__price {
+  width: 22%;
+  height: calc(var(--nud-text-30) * 1.55);
+}
+.skeleton__rating {
+  width: 40%;
+  height: calc(var(--nud-text-18) * 1.55);
+}
+/*
+  The box keeps the full line-box height so the layout does not shift, but the
+  bar is painted only inside the content box. Real text leaves leading above and
+  below each line; without this the three bars touch and read as one block.
+*/
+.skeleton__text {
+  width: 100%;
+  height: calc(var(--nud-text-16) * 1.55);
+  box-sizing: border-box;
+  padding-block: 4px;
+  background-clip: content-box;
+}
+.skeleton__text--short {
+  width: 58%;
+}
+/* Matches .detail__description: one block, its own top margin, no gaps inside. */
+.skeleton__paragraph {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: var(--nud-space-2);
 }
 
 @media (prefers-reduced-motion: reduce) {

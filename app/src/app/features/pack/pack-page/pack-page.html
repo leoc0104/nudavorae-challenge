@@ -17,14 +17,24 @@
     }
 
     @case ('loading') {
+      <!--
+        One placeholder per element the real screen has, at the height its type
+        size will occupy, so the layout does not shift when the answer lands.
+      -->
       <div class="detail" aria-hidden="true">
         <div class="skeleton skeleton__cover"></div>
         <div class="detail__body">
-          <span class="skeleton skeleton__line" style="width: 60%; height: 32px"></span>
-          <span class="skeleton skeleton__line" style="width: 30%"></span>
-          <span class="skeleton skeleton__line" style="width: 100%"></span>
-          <span class="skeleton skeleton__line" style="width: 92%"></span>
-          <span class="skeleton skeleton__line" style="width: 74%"></span>
+          <span class="skeleton skeleton__title"></span>
+          <span class="skeleton skeleton__handle"></span>
+          <span class="skeleton skeleton__price"></span>
+          <span class="skeleton skeleton__rating"></span>
+          <!-- One block, no gaps: the real description is a single <p> whose
+               lines sit inside its own line boxes. -->
+          <span class="skeleton__paragraph">
+            <span class="skeleton skeleton__text"></span>
+            <span class="skeleton skeleton__text"></span>
+            <span class="skeleton skeleton__text skeleton__text--short"></span>
+          </span>
         </div>
       </div>
     }
