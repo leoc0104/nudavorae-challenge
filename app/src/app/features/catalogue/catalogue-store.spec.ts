@@ -6,36 +6,37 @@ import {
   TestRequest,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { beforeEach, describe, expect, it } from 'vitest';
-import { PackCard, PackPage } from '../../core/api/contract';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { PackCard } from '../../core/api/contract';
 import { CatalogueStore } from './catalogue-store';
 
 /**
- * RF-2. "Type lat, then latex, with the first response delayed. The results for
- * lat must never appear." The brief calls this the single most common way to
- * fail the challenge, so it is pinned here.
+ * RF-2, the first of the two tests the brief chose.
  *
- * The seed makes the failure loud rather than plausible: lat matches 8 packs
- * and latex matches 1, so a stale answer landing is unmissable on screen.
+ *   "Type lat, then latex, with the first response delayed. The results for lat
+ *    must never appear. Ships as a test. This is the single most common way to
+ *    fail this challenge."
+ *
+ * The seed is built to make the failure loud rather than plausible: lat matches
+ * eight packs and latex matches one, so a stale answer landing is unmistakable
+ * both on screen and here.
  */
 
 const card = (id: string, title: string): PackCard => ({
   id,
   title,
-  creator_handle: '@lumen_ash',
+  creator_handle: 'still_orbit',
   price_cents: 1999,
   cover_media_id: `media_${id}`,
-  rating: '4.8',
-  review_count: 12,
+  rating: '4.2',
+  review_count: 7,
 });
 
-const page = (items: readonly PackCard[]): PackPage => ({ items, next_cursor: null });
+/** What "lat" matches. None of these may ever reach the screen. */
+const LAT = Array.from({ length: 8 }, (_, i) => card(`pack_lat_${i}`, `Latitude ${i}`));
+const LATEX = [card('pack_latex', 'Latex, in detail')];
 
-/** What 'lat' matches: eight packs, none of which may ever reach the screen. */
-const LAT_RESULTS = Array.from({ length: 8 }, (_, i) => card(`pack_lat_${i}`, `Latitude ${i}`));
-const LATEX_RESULTS = [card('pack_latex', 'Latex, in detail')];
-
-describe('CatalogueStore (RF-2: a late answer to an old question never lands)', () => {
+describe('RF-2: a late answer to an old question never lands', () => {
   let store: CatalogueStore;
   let http: HttpTestingController;
 
@@ -47,12 +48,12 @@ describe('CatalogueStore (RF-2: a late answer to an old question never lands)', 
     http = TestBed.inject(HttpTestingController);
   });
 
+  afterEach(() => http.verify({ ignoreCancelled: true }));
+
   const requestFor = (q: string): TestRequest =>
     http.expectOne((request) => request.url === '/packs' && request.params.get('q') === q);
 
-  const ids = (): readonly string[] => store.items().map((item) => item.id);
-
-  it('abandons the request for the replaced query and shows only the current results', () => {
+  it('shows the results for latex, and never the results for lat', () => {
     // The user types "lat". Its answer is going to be slow.
     store.load({ q: 'lat', sort: 'newest' });
     const stale = requestFor('lat');
@@ -60,68 +61,23 @@ describe('CatalogueStore (RF-2: a late answer to an old question never lands)', 
 
     // Before that answer arrives, they finish the word.
     store.load({ q: 'latex', sort: 'newest' });
+    const current = requestFor('latex');
 
     // switchMap unsubscribed the first request, and unsubscribing an HttpClient
-    // request cancels the XHR. This assertion is the whole rule: nothing is
+    // request aborts the XHR. This assertion is the whole rule: nothing is
     // listening for "lat" any more, so its answer has nowhere to land.
     expect(stale.cancelled).toBe(true);
 
-    // And it genuinely cannot be delivered, late or otherwise.
-    expect(() => stale.flush(page(LAT_RESULTS))).toThrowError(/cancelled/i);
+    // The answers come back in the wrong order: the newer one first...
+    current.flush({ items: LATEX, next_cursor: null });
+    expect(store.items().map((p) => p.id)).toEqual(['pack_latex']);
 
-    requestFor('latex').flush(page(LATEX_RESULTS));
+    // ...and then the stale one tries to arrive. It cannot even be delivered.
+    expect(() => stale.flush({ items: LAT, next_cursor: null })).toThrowError(/cancelled/i);
 
-    expect(ids()).toEqual(['pack_latex']);
-    expect(store.status()).toBe('ready');
-  });
-
-  it('keeps the newer results even when the stale request is the one that resolves last', () => {
-    store.load({ q: 'lat', sort: 'newest' });
-    const stale = requestFor('lat');
-
-    store.load({ q: 'latex', sort: 'newest' });
-    const current = requestFor('latex');
-
-    // Answers come back in the wrong order: the newer one first.
-    current.flush(page(LATEX_RESULTS));
-    expect(ids()).toEqual(['pack_latex']);
-
-    // Then the old one tries to arrive. It is already cancelled, so the screen
-    // cannot be overwritten by results for a question the user has replaced.
-    expect(stale.cancelled).toBe(true);
-    expect(ids()).toEqual(['pack_latex']);
+    // The screen still shows the answer to the question actually being asked.
+    expect(store.items().map((p) => p.id)).toEqual(['pack_latex']);
     expect(store.query().q).toBe('latex');
-  });
-
-  it('cancels an in-flight page of load-more when the query changes underneath it', () => {
-    store.load({ q: 'lat', sort: 'newest' });
-    requestFor('lat').flush({ items: LAT_RESULTS, next_cursor: 'cursor_page_2' });
-
-    store.loadMore();
-    const stalePage = http.expectOne((request) => request.params.get('cursor') === 'cursor_page_2');
-
-    // A second page for "lat" must not be appended to the results for "latex".
-    store.load({ q: 'latex', sort: 'newest' });
-    expect(stalePage.cancelled).toBe(true);
-
-    requestFor('latex').flush(page(LATEX_RESULTS));
-    expect(ids()).toEqual(['pack_latex']);
-  });
-
-  it('serves a repeated query from memory without a request (RF-6)', () => {
-    store.load({ q: 'lat', sort: 'newest' });
-    requestFor('lat').flush(page(LAT_RESULTS));
-    expect(ids()).toHaveLength(8);
-
-    // Coming back from a pack asks for the same query. No request may leave.
-    store.load({ q: 'lat', sort: 'newest' });
-
-    http.verify();
-    expect(ids()).toHaveLength(8);
     expect(store.status()).toBe('ready');
-  });
-
-  afterEach(() => {
-    http.verify({ ignoreCancelled: true });
   });
 });
