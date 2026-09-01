@@ -49,8 +49,34 @@
 }
 /* The browser draws the select's arrow against the inline-end padding edge, so
    it needs more room on that side than the text field does. */
-select.input {
-  padding-inline-end: var(--nud-space-6);
+/*
+  Safari and Chrome draw very different native select arrows, and neither
+  respects padding on that edge the same way. Removing the native control and
+  drawing the chevron ourselves is the only way the sort field looks the same
+  in all four target browsers.
+*/
+.select {
+  position: relative;
+  display: block;
+}
+.select select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  padding-inline-end: var(--nud-space-8);
+}
+.select::after {
+  content: '';
+  position: absolute;
+  inset-inline-end: var(--nud-space-4);
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--text-secondary);
+  border-bottom: 2px solid var(--text-secondary);
+  transform: translateY(-70%) rotate(45deg);
+  /* The chevron is decoration: clicks belong to the select underneath. */
+  pointer-events: none;
 }
 .grid {
   display: grid;

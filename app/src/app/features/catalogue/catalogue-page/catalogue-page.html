@@ -20,11 +20,13 @@
 
     <div class="field">
       <label class="label" for="catalogue-sort">Sort</label>
-      <select id="catalogue-sort" class="input" [value]="sort()" (change)="onSortChange($event)">
-        @for (option of sorts; track option) {
-          <option [value]="option">{{ sortLabels[option] }}</option>
-        }
-      </select>
+      <span class="select">
+        <select id="catalogue-sort" class="input" [value]="sort()" (change)="onSortChange($event)">
+          @for (option of sorts; track option) {
+            <option [value]="option">{{ sortLabels[option] }}</option>
+          }
+        </select>
+      </span>
     </div>
   </form>
 
