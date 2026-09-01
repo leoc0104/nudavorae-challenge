@@ -1,78 +1,43 @@
 # Nudavorae frontend challenge
 
-Two screens on top of the stub in `stub/`: a catalogue of packs, and a pack
-detail screen with its reviews.
-
 ## Running it
 
-Node 22 (`.nvmrc`), then:
+Node 22, then from the repository root:
 
 ```
-npm install     # also installs the app's dependencies
-npm start       # stub on :4010, app on :4200
+npm install
+npm start
 ```
 
-Open **http://localhost:4200**. The app is proxied onto the stub
-(`app/proxy.conf.json`), so both are on one origin and the covers do not
-preflight.
+The stub starts on port 4010 and the app on port 4200. Open
+**http://localhost:4200**.
 
 ```
-npm test        # 14 tests, headless, no browser needed
-npm run lint    # eslint, plus a check that no colour value escapes the token layer
-npm run build   # production build
+npm test
 ```
 
-## Breaking it on purpose
+## The three levers
 
-The stub's three levers are read from the **page** URL and travel to every
-request the app makes while they are there. Put them on the address bar and
-they stay through typing, sorting and paging.
+They are read from the page URL and travel to every request the app makes while
+they are there, so they survive typing, sorting and paging.
 
-| What to try | URL |
-| --- | --- |
-| **Slow.** Every request holds for 3s: the catalogue draws its loading state, then the results. | http://localhost:4200/?delay=3000 |
-| **Failing.** Every request answers 503 with an error body, and the screen shows the stub's own message with a Try again. | http://localhost:4200/?fail=503 |
-| **Empty.** A well-formed page with no items, which is a different screen from a search that found nothing. | http://localhost:4200/?empty=1 |
+### `?delay=<ms>`
 
-They compose, and they apply to the pack screen too:
+**http://localhost:4200/?delay=3000**
 
-- **A failing write.** http://localhost:4200/packs/pack_0006 — post a review
-  (it succeeds, and the form becomes *Change your review*). Now change the score
-  and the text and save it again: the stub answers **409**, because it has
-  already taken one review from you. The average moves the instant you press
-  the button, then returns to what the server last said, the reason appears
-  under the field, and your text is still there.
-  Note that `?fail=` on this screen fails the *pack* request too, so you get the
-  failed screen rather than a failed write — which is why the recipe above uses
-  a refusal the stub produces on its own.
-- **The stale search.** http://localhost:4200/?delay=3000 — type `lat`, wait a
-  beat, then finish the word to `latex`. `lat` matches 8 packs and `latex`
-  matches 1; the 8 never appear.
-- **Empty after a search.** http://localhost:4200/?q=zzz — a different screen
-  from `?empty=1`.
+Every request is held for three seconds. The catalogue draws its loading state,
+then replaces it with the results.
 
-## Worth clicking
+### `?fail=<status>`
 
-- **Back.** Open a pack from halfway down the list and press Back. Same cards,
-  same scroll position, no spinner, no refetch.
-- **Keyboard only.** Tab to the rating on a pack screen; it is one stop, and the
-  arrow keys set the score. Each star announces itself as "3 stars", not "star".
-- **A deep link.** Paste http://localhost:4200/packs/pack_0012 into a new tab.
-  It loads the app, not the API, even though the stub owns that path.
-- **Theme.** The control in the header is System / Light / Dark. System follows
-  the OS; the choice survives a reload.
-- **The three refusals.** `pack_0003` (already reviewed), `pack_0007` (not
-  purchased), `pack_0028` (removed).
+**http://localhost:4200/?fail=503**
 
-## Layout
+Every request answers with that status and an error body. The catalogue shows
+the failed state carrying the stub's own message, and a Try again button.
 
-```
-app/          the Angular application
-stub/         the starter's stub, unchanged
-tokens/       the starter's primitives, unchanged
-assets/fonts/ the starter's self-hosted faces, unchanged
-scripts/      dev.mjs (unchanged) and the token check
-DECISIONS.md  the trade-offs, under 400 words
-```
+### `?empty=1`
 
-Nothing in `stub/`, `tokens/` or `assets/` was modified.
+**http://localhost:4200/?empty=1**
+
+A well-formed page with no items. This is the empty catalogue, which is a
+different screen from a search that matched nothing (`?q=zzz`).
