@@ -58,7 +58,16 @@ textarea {
   border-radius: var(--nud-radius-inset);
 }
 
-/* Available to assistive technology, absent from the page. */
+/*
+  Available to assistive technology, absent from the page.
+
+  This is applied to focusable controls (the rating radios, the theme radios),
+  so it has to hide them without taking them out of the tab order. clip-path
+  alone is the modern spelling, but WebKit has a long history of mishandling it
+  on form controls, so the legacy clip is kept alongside it and the native
+  appearance is reset. That pairing is what the CDK, Bootstrap and HTML5
+  Boilerplate all ship, for the same reason.
+*/
 .sr-only {
   position: absolute;
   width: 1px;
@@ -66,9 +75,13 @@ textarea {
   padding: 0;
   margin: -1px;
   overflow: hidden;
+  clip: rect(0 0 0 0);
   clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
+  outline: 0;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .page {
