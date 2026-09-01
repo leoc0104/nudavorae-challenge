@@ -87,32 +87,17 @@
         <section class="panel" aria-labelledby="write-heading">
           <h2 class="sr-only" id="write-heading">Your review</h2>
 
-          @switch (store.formMode()) {
-            @case ('write') {
-              <nud-review-form
-                mode="write"
-                [submitting]="store.submitting()"
-                [failure]="store.submitError()"
-                (send)="onSend($event)"
-              />
-            }
-            @case ('edit') {
-              <nud-review-form
-                mode="edit"
-                [existing]="store.ownReview()"
-                [submitting]="store.submitting()"
-                [failure]="store.submitError()"
-                (send)="onSend($event)"
-              />
-            }
-            @default {
-              @if (refusal(); as reason) {
-                <div class="state state--quiet">
-                  <p class="state__title">{{ reason.title }}</p>
-                  <p class="state__body">{{ reason.body }}</p>
-                </div>
-              }
-            }
+          @if (store.formMode() === 'write') {
+            <nud-review-form
+              [submitting]="store.submitting()"
+              [failure]="store.submitError()"
+              (send)="onSend($event)"
+            />
+          } @else if (refusal(); as reason) {
+            <div class="state state--quiet">
+              <p class="state__title">{{ reason.title }}</p>
+              <p class="state__body">{{ reason.body }}</p>
+            </div>
           }
         </section>
 

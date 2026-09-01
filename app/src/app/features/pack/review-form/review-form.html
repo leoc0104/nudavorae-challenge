@@ -1,5 +1,5 @@
 <form class="form" (submit)="onSubmit($event)">
-  <h3 class="form__title">{{ mode() === 'edit' ? 'Change your review' : 'Write a review' }}</h3>
+  <h3 class="form__title">Write a review</h3>
 
   <nud-rating-input [(value)]="score" [disabled]="submitting()" />
 
@@ -22,7 +22,7 @@
 
   <div class="form__actions">
     <button class="button button--primary" type="submit" [disabled]="submitting()">
-      {{ submitting() ? 'Sending...' : mode() === 'edit' ? 'Save changes' : 'Post review' }}
+      {{ submitting() ? 'Sending...' : 'Post review' }}
     </button>
     @if (submitting()) {
       <!--

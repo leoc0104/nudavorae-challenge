@@ -153,8 +153,15 @@ describe('PackStore', () => {
       expect(store.reviewCount()).toBe(3);
       expect(store.pendingReviewId()).toBeNull();
       expect(store.canReview()).toBe(false);
-      expect(store.formMode()).toBe('edit');
       expect(store.submitError()).toBeNull();
+
+      // The stub answers 409 to any further POST, so the screen must stop
+      // offering a form. Showing an editable one here would put a Save button
+      // on screen that is guaranteed to fail.
+      expect(store.formMode()).toBe('refused');
+      expect(store.reason()).toBe('already_reviewed');
+      // The review itself is still attributed, so the refusal can point at it.
+      expect(store.ownReview()?.body).toBe('Excellent.');
     });
   });
 

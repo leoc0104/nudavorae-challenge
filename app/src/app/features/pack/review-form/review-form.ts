@@ -2,14 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   input,
   output,
   signal,
-  untracked,
 } from '@angular/core';
 import { ApiError } from '../../../core/api/api-error';
-import { NewReview, Review, Score } from '../../../core/api/contract';
+import { NewReview, Score } from '../../../core/api/contract';
 import { RatingInput } from '../rating-input/rating-input';
 
 /**
@@ -22,8 +20,8 @@ import { RatingInput } from '../rating-input/rating-input';
  * flight. One choke point, not two half-measures.
  *
  * "Cannot lose what was typed" is why this component owns the draft and never
- * clears it on failure. The fields are seeded once from whatever the caller
- * already wrote and are otherwise the user's alone.
+ * clears it on failure. The fields belong to the user from first keystroke to
+ * last, and no re-render may overwrite them.
  */
 @Component({
   selector: 'nud-review-form',
@@ -33,9 +31,6 @@ import { RatingInput } from '../rating-input/rating-input';
   styleUrl: './review-form.css',
 })
 export class ReviewForm {
-  readonly mode = input.required<'write' | 'edit'>();
-  /** The review being changed, when there is one. */
-  readonly existing = input<Review | null>(null);
   readonly submitting = input(false);
   /** The server's reason, shown verbatim so the screen says what happened. */
   readonly failure = input<ApiError | null>(null);
@@ -45,25 +40,8 @@ export class ReviewForm {
   protected readonly score = signal<Score | null>(null);
   protected readonly body = signal('');
   private readonly localProblem = signal<string | null>(null);
-  private seeded = false;
-
   /** The form's own complaint, or the server's, whichever is current. */
   protected readonly problem = computed(() => this.localProblem() ?? this.failure()?.message ?? null);
-
-  constructor() {
-    // Prefilled when changing a review, empty when writing the first one. Seeded
-    // once: after that the fields belong to the user, and a re-render must never
-    // overwrite what they are in the middle of typing.
-    effect(() => {
-      const existing = this.existing();
-      untracked(() => {
-        if (this.seeded || existing === null) return;
-        this.seeded = true;
-        this.score.set(existing.score);
-        this.body.set(existing.body);
-      });
-    });
-  }
 
   protected onBodyInput(event: Event): void {
     this.body.set((event.target as HTMLTextAreaElement).value);

@@ -6,8 +6,8 @@ One `Subject` feeds one `switchMap` in `CatalogueStore`. A newer query
 unsubscribes the request in flight, and unsubscribing an `HttpClient` request
 aborts the XHR, so a late answer has nothing listening for it. No timer appears
 in that file: if the fix were a delay, the bug would still be there. Typing is
-debounced 200ms before the URL is written, which is a courtesy to the server,
-not the race fix; the test drives the store past it.
+debounced 200ms before the URL is written: a courtesy to the server, not the
+race fix.
 
 The effect calling `load()` wraps it in `untracked`. Otherwise `load()` reading
 the store's status makes it a dependency, and a failure re-triggers the effect
@@ -22,7 +22,7 @@ repaints memory: same items, same page, same scroll. It is invalidated when `q`
 or `sort` changes, the same moment the stub's cursor stops being valid, so there
 is one rule rather than two. Scroll is captured on `NavigationStart`, not on
 destroy: by destroy the next screen is laid out and the browser has clamped
-`scrollY` to it. Covers refetch, which `max-age=300` on `/media` makes free.
+`scrollY` to it. Covers refetch, which `max-age=300` makes free.
 
 ## At fifty thousand packs
 
@@ -34,9 +34,10 @@ intersection, object URLs revoked as cards leave it.
 
 ## Assumptions
 
-- `already_reviewed` shows the editable form only when a review is actually
-  attributed to the caller. The seed never contains one, so the fixtures show
-  the refusal instead; a form that could only 409 promises what it cannot keep.
+- The brief names three answers; the contract supports two. There is no edit
+  endpoint, and POST answers 409 whenever `can_review` is false, so "change the
+  one you left" cannot succeed. The screen shows the refusal and points at the
+  review instead of offering a Save button guaranteed to fail.
 - Sort pushes a history entry; typing replaces one.
 - A proxy, not direct CORS: an `Authorization` header cross-origin preflights
   every cover. It collides with the app's `/packs/:id`, so the proxy bypasses to

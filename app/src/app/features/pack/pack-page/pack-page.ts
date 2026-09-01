@@ -55,7 +55,17 @@ export class PackPage {
 
   protected readonly refusal = computed(() => {
     const reason = this.store.reason();
-    return reason === null ? null : REFUSALS[reason];
+    if (reason === null) return null;
+    // Once the caller has written one in this session the stub attributes it to
+    // them, so the screen can point at it. From the committed fixtures it
+    // cannot, and saying otherwise would be a small lie.
+    if (reason === 'already_reviewed' && this.store.ownReview() !== null) {
+      return {
+        title: 'You have already reviewed this pack',
+        body: 'Yours is the first review below. Each buyer can leave one.',
+      };
+    }
+    return REFUSALS[reason];
   });
 
   /**

@@ -86,13 +86,20 @@ export class PackStore {
   );
 
   /**
-   * Three answers, exactly as the brief frames them: write one, change the one
-   * you left, or the reason there is nothing to offer.
+   * Two answers, not the brief's three, and the contract is why.
+   *
+   * There is no edit endpoint: POST /packs/{id}/reviews answers 409 whenever
+   * can_review is false, which includes every pack the caller has already
+   * reviewed. So "change the one you left" is not something this API can be
+   * asked to do. Rendering an editable form for it would put a Save button on
+   * screen that is guaranteed to fail, which is the kind of screen this brief
+   * exists to catch.
+   *
+   * The caller's own review is still shown, attributed, in the list below.
    */
-  readonly formMode = computed<'write' | 'edit' | 'refused'>(() => {
-    if (this._canReview()) return 'write';
-    return this._reason() === 'already_reviewed' && this.ownReview() !== null ? 'edit' : 'refused';
-  });
+  readonly formMode = computed<'write' | 'refused'>(() =>
+    this._canReview() ? 'write' : 'refused',
+  );
 
   load(id: string): void {
     this._status.set('loading');
@@ -204,7 +211,11 @@ export class PackStore {
       pending,
       ...current.filter((review) => review.id !== previous?.id),
     ]);
-    this._canReview.set(false);
+    // Deliberately NOT flipping canReview here. The form is only withdrawn once
+    // the server has actually taken the review; doing it optimistically would
+    // unmount the form while its own request is in flight and destroy the
+    // draft, which is precisely what RF-7 forbids. The second-submit guard is
+    // submit()'s own early return, not the form disappearing.
   }
 
   /** Editing moves a vote between buckets; a first review only adds one. */
