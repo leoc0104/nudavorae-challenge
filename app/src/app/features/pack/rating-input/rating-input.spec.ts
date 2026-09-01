@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { Score } from '../../core/api/contract';
+import { Score } from '../../../core/api/contract';
 import { RatingInput } from './rating-input';
 
 /**

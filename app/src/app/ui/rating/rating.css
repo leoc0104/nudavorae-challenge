@@ -1,0 +1,36 @@
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nud-space-2);
+  font-size: var(--nud-text-14);
+}
+.rating--large {
+  font-size: var(--nud-text-18);
+}
+.stars {
+  position: relative;
+  display: inline-block;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.stars__track {
+  color: var(--rating-track);
+}
+.stars__fill {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  overflow: hidden;
+  color: var(--rating-on);
+  white-space: nowrap;
+}
+.rating__value {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.rating__count,
+.rating__none {
+  color: var(--text-secondary);
+  font-size: 0.9em;
+}

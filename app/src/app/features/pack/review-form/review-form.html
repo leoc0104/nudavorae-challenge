@@ -1,0 +1,31 @@
+<form class="form" (submit)="onSubmit($event)">
+  <h3 class="form__title">{{ mode() === 'edit' ? 'Change your review' : 'Write a review' }}</h3>
+
+  <nud-rating-input [(value)]="score" [disabled]="submitting()" />
+
+  <div class="form__field">
+    <label class="form__label" for="review-body">Your review</label>
+    <textarea
+      id="review-body"
+      class="form__input"
+      rows="4"
+      [value]="body()"
+      (input)="onBodyInput($event)"
+      [attr.aria-describedby]="problem() !== null ? 'review-problem' : null"
+      [attr.aria-invalid]="problem() !== null"
+    ></textarea>
+  </div>
+
+  @if (problem(); as message) {
+    <p class="form__problem" id="review-problem" role="alert">{{ message }}</p>
+  }
+
+  <div class="form__actions">
+    <button class="button button--primary" type="submit" [disabled]="submitting()">
+      {{ submitting() ? 'Sending...' : mode() === 'edit' ? 'Save changes' : 'Post review' }}
+    </button>
+    @if (submitting()) {
+      <span class="form__status" aria-live="polite">Sending your review...</span>
+    }
+  </div>
+</form>

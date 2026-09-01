@@ -8,9 +8,9 @@ import {
   signal,
   untracked,
 } from '@angular/core';
-import { ApiError } from '../../core/api/api-error';
-import { NewReview, Review, Score } from '../../core/api/contract';
-import { RatingInput } from './rating-input';
+import { ApiError } from '../../../core/api/api-error';
+import { NewReview, Review, Score } from '../../../core/api/contract';
+import { RatingInput } from '../rating-input/rating-input';
 
 /**
  * RF-7. Two promises, and they pull in opposite directions.
@@ -29,86 +29,8 @@ import { RatingInput } from './rating-input';
   selector: 'nud-review-form',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RatingInput],
-  template: `
-    <form class="form" (submit)="onSubmit($event)">
-      <h3 class="form__title">{{ mode() === 'edit' ? 'Change your review' : 'Write a review' }}</h3>
-
-      <nud-rating-input [(value)]="score" [disabled]="submitting()" />
-
-      <div class="form__field">
-        <label class="form__label" for="review-body">Your review</label>
-        <textarea
-          id="review-body"
-          class="form__input"
-          rows="4"
-          [value]="body()"
-          (input)="onBodyInput($event)"
-          [attr.aria-describedby]="problem() !== null ? 'review-problem' : null"
-          [attr.aria-invalid]="problem() !== null"
-        ></textarea>
-      </div>
-
-      @if (problem(); as message) {
-        <p class="form__problem" id="review-problem" role="alert">{{ message }}</p>
-      }
-
-      <div class="form__actions">
-        <button class="button button--primary" type="submit" [disabled]="submitting()">
-          {{ submitting() ? 'Sending...' : mode() === 'edit' ? 'Save changes' : 'Post review' }}
-        </button>
-        @if (submitting()) {
-          <span class="form__status" aria-live="polite">Sending your review...</span>
-        }
-      </div>
-    </form>
-  `,
-  styles: `
-    .form {
-      display: flex;
-      flex-direction: column;
-      gap: var(--nud-space-4);
-      padding: var(--nud-space-6);
-      background: var(--surface-raised);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--nud-radius-sheet);
-    }
-    .form__title {
-      font-size: var(--nud-text-20);
-    }
-    .form__field {
-      display: flex;
-      flex-direction: column;
-      gap: var(--nud-space-1);
-    }
-    .form__label {
-      font-size: var(--nud-text-12);
-      font-weight: 600;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .form__input {
-      padding: var(--nud-space-3);
-      background: var(--surface-base);
-      color: var(--text-primary);
-      border: 1px solid var(--border-strong);
-      border-radius: var(--nud-radius-control);
-      resize: vertical;
-    }
-    .form__problem {
-      color: var(--status-danger);
-      font-size: var(--nud-text-14);
-    }
-    .form__actions {
-      display: flex;
-      align-items: center;
-      gap: var(--nud-space-3);
-    }
-    .form__status {
-      font-size: var(--nud-text-14);
-      color: var(--text-secondary);
-    }
-  `,
+  templateUrl: './review-form.html',
+  styleUrl: './review-form.css',
 })
 export class ReviewForm {
   readonly mode = input.required<'write' | 'edit'>();

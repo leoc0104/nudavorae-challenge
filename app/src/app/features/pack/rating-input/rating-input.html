@@ -1,0 +1,26 @@
+<fieldset class="group" [disabled]="disabled()">
+  <legend class="legend">{{ label() }}</legend>
+
+  <div class="stars" (mouseleave)="hovered.set(null)">
+    @for (score of scores; track score) {
+      <input
+        class="star__input sr-only"
+        type="radio"
+        [id]="groupId + '-' + score"
+        [name]="groupId"
+        [value]="score"
+        [checked]="value() === score"
+        (change)="value.set(score)"
+      />
+      <label
+        class="star"
+        [class.star--on]="shown() >= score"
+        [for]="groupId + '-' + score"
+        (mouseenter)="hovered.set(score)"
+      >
+        <span class="star__glyph" aria-hidden="true">&#9733;</span>
+        <span class="sr-only">{{ score }} {{ score === 1 ? 'star' : 'stars' }}</span>
+      </label>
+    }
+  </div>
+</fieldset>

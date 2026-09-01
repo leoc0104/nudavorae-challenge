@@ -9,12 +9,12 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { NewReview, RefusalReason, Score } from '../../core/api/contract';
-import { SecureImage } from '../../core/media/secure-image';
-import { MoneyPipe } from '../../ui/money.pipe';
-import { RatingDisplay } from '../../ui/rating';
-import { PackStore } from './pack-store';
-import { ReviewForm } from './review-form';
+import { NewReview, RefusalReason, Score } from '../../../core/api/contract';
+import { SecureImage } from '../../../core/media/secure-image';
+import { MoneyPipe } from '../../../ui/money.pipe';
+import { RatingDisplay } from '../../../ui/rating/rating';
+import { PackStore } from '../pack-store';
+import { ReviewForm } from '../review-form/review-form';
 
 /** The reason there is nothing to offer, in the screen's own words. */
 const REFUSALS: Readonly<Record<RefusalReason, { title: string; body: string }>> = {
@@ -51,7 +51,7 @@ export class PackPage {
   protected readonly store = inject(PackStore);
 
   private readonly params = toSignal(this.route.paramMap, { requireSync: true });
-  protected readonly packId = computed(() => this.params().get('id') ?? '');
+  private readonly packId = computed(() => this.params().get('id') ?? '');
 
   protected readonly refusal = computed(() => {
     const reason = this.store.reason();

@@ -12,9 +12,9 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged, filter } from 'rxjs';
-import { SORTS, Sort, isSort } from '../../core/api/contract';
-import { PackCardComponent } from './pack-card';
-import { CatalogueStore } from './catalogue-store';
+import { SORTS, Sort, isSort } from '../../../core/api/contract';
+import { PackCardComponent } from '../pack-card/pack-card';
+import { CatalogueStore } from '../catalogue-store';
 
 /** Long enough not to fire per keystroke, short enough to feel immediate. */
 const TYPING_SETTLE_MS = 200;
@@ -77,7 +77,7 @@ export class CataloguePage {
   );
 
   /** What a screen reader is told when one state replaces another (RF-4). */
-  protected readonly stateMessage = computed(() => {
+  private readonly stateMessage = computed(() => {
     const query = this.q();
     switch (this.store.status()) {
       case 'idle':
