@@ -77,6 +77,7 @@ export class PackPage {
   });
 
   private lastAnnounced = '';
+  private wasSubmitting = false;
 
   constructor() {
     // untracked for the same reason as the catalogue: the effect's only
@@ -86,12 +87,37 @@ export class PackPage {
       if (id !== '') untracked(() => this.store.load(id));
     });
 
+    // Loading, failed and ready.
+    effect(() => this.announce(this.announcement()));
+
+    // The write, start to finish. This lives here rather than in ReviewForm
+    // because a live region has to exist before the text it carries does, and
+    // LiveAnnouncer keeps exactly one such element for the whole app. A region
+    // rendered by an @if alongside its own message never gets watched.
     effect(() => {
-      const message = this.announcement();
-      if (message === '' || message === this.lastAnnounced) return;
-      this.lastAnnounced = message;
-      this.announcer.announce(message, 'polite');
+      const submitting = this.store.submitting();
+      const failure = this.store.submitError();
+
+      untracked(() => {
+        if (submitting && !this.wasSubmitting) {
+          this.announce('Sending your review.');
+        } else if (!submitting && this.wasSubmitting) {
+          this.announce(
+            failure === null
+              ? `Review posted. The average is now ${this.store.rating() ?? 'unrated'} out of 5.`
+              : `Your review was not saved. ${failure.message}`,
+          );
+        }
+        this.wasSubmitting = submitting;
+      });
     });
+  }
+
+  /** One announcer, and never the same sentence twice in a row. */
+  private announce(message: string): void {
+    if (message === '' || message === this.lastAnnounced) return;
+    this.lastAnnounced = message;
+    void this.announcer.announce(message, 'polite');
   }
 
   private readonly announcement = computed(() => {

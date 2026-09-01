@@ -25,7 +25,13 @@
       {{ submitting() ? 'Sending...' : mode() === 'edit' ? 'Save changes' : 'Post review' }}
     </button>
     @if (submitting()) {
-      <span class="form__status" aria-live="polite">Sending your review...</span>
+      <!--
+        Visual only. The announcement for this is made by PackPage through
+        LiveAnnouncer: a live region created at the same moment as its own
+        text has nothing for a screen reader to have started watching, so
+        aria-live here would read as correct and do nothing.
+      -->
+      <span class="form__status">Sending your review...</span>
     }
   </div>
 </form>
