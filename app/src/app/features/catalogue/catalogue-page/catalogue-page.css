@@ -47,6 +47,11 @@
 .input:hover {
   border-color: var(--border-interactive);
 }
+/* The browser draws the select's arrow against the inline-end padding edge, so
+   it needs more room on that side than the text field does. */
+select.input {
+  padding-inline-end: var(--nud-space-6);
+}
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(var(--nud-card-min), 1fr));
