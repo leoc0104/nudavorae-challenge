@@ -1,0 +1,87 @@
+.skip {
+  position: absolute;
+  inset-inline-start: var(--nud-space-4);
+  inset-block-start: calc(var(--nud-space-4) * -4);
+  z-index: 10;
+  padding: var(--nud-space-2) var(--nud-space-4);
+  background: var(--surface-overlay);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--nud-radius-control);
+  transition: inset-block-start var(--nud-duration-fast) var(--nud-ease);
+}
+.skip:focus {
+  inset-block-start: var(--nud-space-4);
+}
+
+.masthead {
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--surface-base);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+.masthead__inner {
+  max-width: var(--nud-page-max);
+  margin: 0 auto;
+  padding: var(--nud-space-3) var(--nud-space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nud-space-4);
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nud-space-2);
+  text-decoration: none;
+  color: var(--text-primary);
+  min-height: var(--nud-target-min);
+}
+.brand__mark {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--nud-radius-full);
+  background: var(--brand-gradient);
+}
+.brand__name {
+  font-family: var(--nud-font-display);
+  font-weight: 600;
+  font-size: var(--nud-text-18);
+  letter-spacing: -0.02em;
+}
+
+.theme {
+  display: flex;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--nud-radius-full);
+  padding: 2px;
+  margin: 0;
+  gap: 2px;
+}
+.theme__option {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--nud-space-3);
+  min-height: calc(var(--nud-target-min) - 12px);
+  border-radius: var(--nud-radius-full);
+  font-size: var(--nud-text-12);
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color var(--nud-duration-fast) var(--nud-ease);
+}
+.theme__option:hover {
+  color: var(--text-primary);
+}
+.theme__input:checked + .theme__option {
+  background: var(--brand-tint);
+  color: var(--text-link);
+}
+.theme__input:focus-visible + .theme__option {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+main:focus {
+  outline: none;
+}

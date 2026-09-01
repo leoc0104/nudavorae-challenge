@@ -1,0 +1,30 @@
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="masthead__inner">
+    <a class="brand" routerLink="/">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__name">nudavorae</span>
+    </a>
+
+    <fieldset class="theme">
+      <legend class="sr-only">Colour theme</legend>
+      @for (option of themeOptions; track option.value) {
+        <input
+          class="theme__input sr-only"
+          type="radio"
+          name="theme"
+          [id]="'theme-' + option.value"
+          [value]="option.value"
+          [checked]="theme.choice() === option.value"
+          (change)="theme.select(option.value)"
+        />
+        <label class="theme__option" [for]="'theme-' + option.value">{{ option.label }}</label>
+      }
+    </fieldset>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+  <router-outlet />
+</main>

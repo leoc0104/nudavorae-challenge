@@ -1,0 +1,15 @@
+<a class="card" [routerLink]="['/packs', pack().id]">
+  <span class="card__cover">
+    <img [nudSecureImage]="pack().cover_media_id" alt="" width="640" height="640" />
+  </span>
+
+  <span class="card__body">
+    <span class="card__title">{{ pack().title }}</span>
+    <span class="card__handle mono">{{ '@' + pack().creator_handle }}</span>
+
+    <span class="card__foot">
+      <span class="card__price mono">{{ pack().price_cents | money }}</span>
+      <nud-rating [rating]="pack().rating" [reviewCount]="pack().review_count" />
+    </span>
+  </span>
+</a>

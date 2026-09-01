@@ -1,0 +1,115 @@
+<div class="page">
+  <header class="head">
+    <h1 class="head__title">Packs</h1>
+    <p class="head__lede">Browse what creators are selling, and rate what you have bought.</p>
+  </header>
+
+  <form class="controls" role="search" (submit)="$event.preventDefault()">
+    <div class="field field--search">
+      <label class="sr-only" for="catalogue-search">Search packs by title or creator</label>
+      <input
+        id="catalogue-search"
+        type="search"
+        class="input"
+        autocomplete="off"
+        placeholder="Search packs or creators"
+        [value]="searchText()"
+        (input)="onSearchInput($event)"
+      />
+    </div>
+
+    <div class="field">
+      <label class="label" for="catalogue-sort">Sort</label>
+      <select id="catalogue-sort" class="input" [value]="sort()" (change)="onSortChange($event)">
+        @for (option of sorts; track option) {
+          <option [value]="option">{{ sortLabels[option] }}</option>
+        }
+      </select>
+    </div>
+  </form>
+
+  <!--
+    One region for every state, so a screen reader is told that the results were
+    replaced rather than having to go looking. The message itself is announced
+    politely from the component; aria-busy covers the gap while it is loading.
+  -->
+  <section class="results" aria-labelledby="results-heading" [attr.aria-busy]="store.status() === 'loading'">
+    <h2 class="sr-only" id="results-heading">{{ heading() }}</h2>
+
+    @switch (store.status()) {
+      @case ('failed') {
+        <div class="state state--error" role="alert">
+          <p class="state__title">That request did not go through</p>
+          <p class="state__body">{{ store.error()?.message }}</p>
+          <button type="button" class="button button--primary" (click)="store.retry()">
+            Try again
+          </button>
+        </div>
+      }
+
+      @case ('loading') {
+        <!-- A designed placeholder rather than a spinner over a blank page. -->
+        <ul class="grid" role="list" aria-hidden="true">
+          @for (placeholder of [1, 2, 3, 4, 5, 6, 7, 8]; track placeholder) {
+            <li class="skeleton-card">
+              <span class="skeleton skeleton__cover"></span>
+              <span class="skeleton skeleton__line skeleton__line--title"></span>
+              <span class="skeleton skeleton__line skeleton__line--handle"></span>
+              <span class="skeleton skeleton__line skeleton__line--foot"></span>
+            </li>
+          }
+        </ul>
+      }
+
+      @default {
+        @if (store.isEmpty()) {
+          @if (store.isSearch()) {
+            <!-- An empty result after a search is its own screen. -->
+            <div class="state">
+              <p class="state__title">Nothing matches &ldquo;{{ q() }}&rdquo;</p>
+              <p class="state__body">
+                No pack title or creator handle contains that. Try a shorter word, or clear the
+                search to see everything.
+              </p>
+              <button type="button" class="button button--primary" (click)="clearSearch()">
+                Clear search
+              </button>
+            </div>
+          } @else {
+            <div class="state">
+              <p class="state__title">There are no packs yet</p>
+              <p class="state__body">
+                Nothing has been published to the catalogue. When a creator lists a pack, it will
+                show up here.
+              </p>
+            </div>
+          }
+        } @else {
+          <ul class="grid" role="list">
+            @for (pack of store.items(); track pack.id) {
+              <li>
+                <nud-pack-card [pack]="pack" />
+              </li>
+            }
+          </ul>
+
+          @if (store.hasMore()) {
+            <div class="more">
+              @if (store.appendError(); as failure) {
+                <p class="more__error" role="alert">{{ failure.message }}</p>
+              }
+              <button
+                type="button"
+                class="button button--ghost"
+                [disabled]="store.appending()"
+                (click)="store.loadMore()"
+              >
+                {{ store.appending() ? 'Loading...' : 'Load more' }}
+              </button>
+            </div>
+          }
+        }
+      }
+    }
+  </section>
+</div>

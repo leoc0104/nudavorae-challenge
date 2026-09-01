@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Nudavorae</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="favicon.ico" />
+    <script>
+      // Stamps the stored theme before first paint so a dark-mode reload does
+      // not flash a white page. The service is still the owner of this value;
+      // this only avoids the gap before Angular boots.
+      (function () {
+        try {
+          var stored = localStorage.getItem('nud.theme');
+          var choice = stored === 'light' || stored === 'dark' ? stored : null;
+          if (choice === null) {
+            choice = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.dataset.theme = choice;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <nud-root></nud-root>
+  </body>
+</html>

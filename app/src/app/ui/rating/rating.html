@@ -1,0 +1,17 @@
+<span class="rating" [class.rating--large]="large()">
+  <span class="stars" aria-hidden="true">
+    <span class="stars__track">{{ FILLED }}</span>
+    <span class="stars__fill" [style.width.%]="percent()">{{ FILLED }}</span>
+  </span>
+
+  @if (rating() !== null) {
+    <span class="mono rating__value">{{ rating() }}</span>
+    @if (reviewCount() !== null) {
+      <span class="rating__count mono">({{ reviewCount() }})</span>
+    }
+  } @else {
+    <span class="rating__none">Not yet rated</span>
+  }
+
+  <span class="sr-only">{{ description() }}</span>
+</span>

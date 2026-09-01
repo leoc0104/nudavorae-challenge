@@ -1,0 +1,47 @@
+.group {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-inline-size: 0;
+}
+.legend {
+  padding: 0;
+  font-size: var(--nud-text-12);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.stars {
+  display: flex;
+  gap: var(--nud-space-1);
+  margin-top: var(--nud-space-1);
+}
+.star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 44px minimum target. */
+  min-inline-size: var(--nud-target-min);
+  min-block-size: var(--nud-target-min);
+  border-radius: var(--nud-radius-control);
+  cursor: pointer;
+  color: var(--rating-off);
+  transition: color var(--nud-duration-fast) var(--nud-ease);
+}
+.star--on {
+  color: var(--rating-on);
+}
+.star__glyph {
+  font-size: var(--nud-text-30);
+  line-height: 1;
+}
+/* The hidden input still owns focus, so the ring is drawn on its label. */
+.star__input:focus-visible + .star {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.group:disabled .star {
+  cursor: not-allowed;
+  opacity: 0.55;
+}

@@ -1,0 +1,157 @@
+<div class="page">
+  <nav class="crumbs">
+    <!-- Back to the list as it was: same items, same scroll, no refetch. -->
+    <a routerLink="/">&#8592; All packs</a>
+  </nav>
+
+  @switch (store.status()) {
+    @case ('failed') {
+      <div class="state state--error" role="alert">
+        <p class="state__title">That pack did not load</p>
+        <p class="state__body">{{ store.error()?.message }}</p>
+        <div class="state__actions">
+          <button type="button" class="button button--primary" (click)="retry()">Try again</button>
+          <a class="button button--ghost" routerLink="/">Back to packs</a>
+        </div>
+      </div>
+    }
+
+    @case ('loading') {
+      <div class="detail" aria-hidden="true">
+        <div class="skeleton skeleton__cover"></div>
+        <div class="detail__body">
+          <span class="skeleton skeleton__line" style="width: 60%; height: 32px"></span>
+          <span class="skeleton skeleton__line" style="width: 30%"></span>
+          <span class="skeleton skeleton__line" style="width: 100%"></span>
+          <span class="skeleton skeleton__line" style="width: 92%"></span>
+          <span class="skeleton skeleton__line" style="width: 74%"></span>
+        </div>
+      </div>
+    }
+
+    @default {
+      @if (store.pack(); as pack) {
+        <article class="detail">
+          <div class="detail__cover">
+            <img [nudSecureImage]="pack.cover_media_id" alt="" width="640" height="640" />
+          </div>
+
+          <div class="detail__body">
+            <h1 class="detail__title">{{ pack.title }}</h1>
+            <p class="detail__handle mono">{{ '@' + pack.creator_handle }}</p>
+
+            <p class="detail__price mono">{{ pack.price_cents | money }}</p>
+
+            <nud-rating
+              [rating]="store.rating()"
+              [reviewCount]="store.reviewCount()"
+              [large]="true"
+            />
+
+            <p class="detail__description">{{ pack.description }}</p>
+          </div>
+        </article>
+
+        <section class="panel" aria-labelledby="scores-heading">
+          <h2 class="panel__title" id="scores-heading">Ratings</h2>
+
+          <div class="scores">
+            <div class="scores__average">
+              <span class="scores__number mono">{{ store.rating() ?? '--' }}</span>
+              <span class="scores__of">out of 5</span>
+              <span class="scores__count">
+                {{ store.reviewCount() }}
+                {{ store.reviewCount() === 1 ? 'review' : 'reviews' }}
+              </span>
+            </div>
+
+            <!-- Absolute counts, all five buckets, always present. -->
+            <ul class="bars" role="list">
+              @for (bucket of bars(); track bucket.score) {
+                <li class="bar">
+                  <span class="bar__label mono">{{ bucket.score }}</span>
+                  <span class="bar__track">
+                    <span class="bar__fill" [style.width.%]="bucket.percent"></span>
+                  </span>
+                  <span class="bar__count mono">{{ bucket.count }}</span>
+                  <span class="sr-only">
+                    {{ bucket.count }} {{ bucket.count === 1 ? 'review' : 'reviews' }} gave
+                    {{ bucket.score }} {{ bucket.score === 1 ? 'star' : 'stars' }}.
+                  </span>
+                </li>
+              }
+            </ul>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="write-heading">
+          <h2 class="sr-only" id="write-heading">Your review</h2>
+
+          @switch (store.formMode()) {
+            @case ('write') {
+              <nud-review-form
+                mode="write"
+                [submitting]="store.submitting()"
+                [failure]="store.submitError()"
+                (send)="onSend($event)"
+              />
+            }
+            @case ('edit') {
+              <nud-review-form
+                mode="edit"
+                [existing]="store.ownReview()"
+                [submitting]="store.submitting()"
+                [failure]="store.submitError()"
+                (send)="onSend($event)"
+              />
+            }
+            @default {
+              @if (refusal(); as reason) {
+                <div class="state state--quiet">
+                  <p class="state__title">{{ reason.title }}</p>
+                  <p class="state__body">{{ reason.body }}</p>
+                </div>
+              }
+            }
+          }
+        </section>
+
+        <section class="panel" aria-labelledby="reviews-heading">
+          <h2 class="panel__title" id="reviews-heading">
+            Reviews <span class="panel__count mono">{{ store.reviews().length }}</span>
+          </h2>
+
+          @if (store.reviews().length === 0) {
+            <div class="state state--quiet">
+              <p class="state__title">No reviews yet</p>
+              <p class="state__body">
+                @if (store.formMode() === 'write') {
+                  Nobody has written one. Yours would be the first.
+                } @else {
+                  Nobody has written one for this pack.
+                }
+              </p>
+            </div>
+          } @else {
+            <ul class="reviews" role="list">
+              @for (review of store.reviews(); track review.id) {
+                <li class="review" [class.review--pending]="review.id === store.pendingReviewId()">
+                  <div class="review__head">
+                    <span class="review__author mono">{{
+                      review.author_handle === 'you' ? 'You' : '@' + review.author_handle
+                    }}</span>
+                    <nud-rating [rating]="review.score.toFixed(1)" />
+                    @if (review.id === store.pendingReviewId()) {
+                      <span class="review__pending">Sending</span>
+                    }
+                  </div>
+                  <p class="review__body">{{ review.body }}</p>
+                </li>
+              }
+            </ul>
+          }
+        </section>
+      }
+    }
+  }
+</div>

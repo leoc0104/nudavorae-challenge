@@ -1,0 +1,8 @@
+/*
+  Global stylesheet. The primitives (tokens/palette.css) and the self-hosted
+  faces (assets/fonts/fonts.css) are pulled in by angular.json before this file,
+  so nothing here reaches a third-party origin.
+*/
+@import './styles/semantic.css';
+@import './styles/base.css';
+@import './styles/components.css';
